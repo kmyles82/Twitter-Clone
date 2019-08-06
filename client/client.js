@@ -36,16 +36,21 @@ form.addEventListener('submit', (event) => {
         console.log(createdMeow)
         form.reset();
         loadingElement.style.display = 'none';
+        listAllMeows();
         form.style.display = '';
     })
 })
 
-function listAllMeows(){
+function listAllMeows() {
+    //clear out all the meows on the page
+    meowsElement.innerHTML = '';
+
     fetch(API_URL)
         //get back response from backend in json format
         .then(response => response.json())
         //get back access to createdMeow
         .then(meows => {
+            meows.reverse();
             meows.forEach(meow => {
                 const div = document.createElement('div');
                 
@@ -55,10 +60,15 @@ function listAllMeows(){
                 const contents = document.createElement('p');
                 contents.textContent = meow.content;
 
+                const date = document.createElement('small')
+                date.textContent = new Date(meow.created);
+
                 div.appendChild(header);
                 div.appendChild(contents);
+                div.appendChild(date)
                 meowsElement.appendChild(div);
             })
             console.log(meows)
+            loadingElement.style.display = 'none';
     })
 }
